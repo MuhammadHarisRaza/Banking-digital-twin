@@ -1,0 +1,293 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Source Sans 3 Variable", "Segoe UI", system-ui, sans-serif;
+
+  --breakpoint-desk: 68.75rem;
+
+  --color-page: #071626;
+  --color-panel: #0a1b2d;
+  --color-card: #0d2033;
+  --color-card-hover: #122a42;
+  --color-line: #24384d;
+  --color-line-soft: #1a2d41;
+  --color-ink: #f4f6f9;
+  --color-soft: #bcc6d2;
+  --color-mute: #8796a7;
+  --color-gold: #dcb877;
+  --color-gold-bright: #f0d199;
+  --color-ok: #5fd08f;
+  --color-warn: #e6b45a;
+  --color-steel: #8fb4dc;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-page);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  cursor: pointer;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 2px;
+}
+
+/* Thin scrollbars inside the panel and dropdowns */
+.thin-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-line) transparent;
+}
+
+/* Shared table treatment for the branch tabs */
+.data-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 15px;
+}
+.data-table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--color-panel);
+  padding: 7px 12px;
+  text-align: left;
+  font-weight: 500;
+  font-size: 13.5px;
+  color: var(--color-mute);
+  border-bottom: 1px solid var(--color-line);
+}
+.data-table td {
+  padding: 8px 12px;
+  color: var(--color-soft);
+  border-bottom: 1px solid var(--color-line-soft);
+  white-space: nowrap;
+}
+.data-table tr:hover td {
+  background: rgb(255 255 255 / 0.02);
+}
+
+/* Map stage */
+.map-stage {
+  background:
+    radial-gradient(90% 80% at 32% 55%, rgb(20 46 72 / 0.42), transparent 70%),
+    var(--color-page);
+}
+.map-stage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.07;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='420'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.008 .05' numOctaves='3' seed='4'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .62 0 0 0 0 .8 0 0 0 .9 -.25'/%3E%3C/filter%3E%3Crect width='420' height='420' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.leaflet-container {
+  background: transparent;
+  font-family: var(--font-sans);
+  outline: none;
+}
+
+/* Branch markers */
+.branch-marker {
+  background: none;
+  border: 0;
+}
+.branch-dot {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: #fff3da;
+  box-shadow:
+    0 0 0 1.5px rgb(7 22 38 / 0.55),
+    0 0 7px 1px rgb(240 209 153 / 0.5);
+  transition: transform 160ms ease, background 160ms ease;
+}
+.branch-marker--secondary .branch-dot {
+  width: 7px;
+  height: 7px;
+  background: var(--color-gold-bright);
+}
+.branch-marker:hover .branch-dot {
+  transform: scale(1.35);
+  background: var(--color-gold-bright);
+}
+.branch-marker--selected .branch-dot {
+  width: 20px;
+  height: 20px;
+  background: #fff6e4;
+  box-shadow:
+    0 0 0 4px rgb(11 26 42 / 0.9),
+    0 0 0 6.5px var(--color-gold),
+    0 0 20px 8px rgb(240 180 80 / 0.5);
+  transform: none;
+}
+.branch-marker--selected::after {
+  content: "";
+  position: absolute;
+  inset: -14px;
+  border-radius: 50%;
+  border: 1px solid rgb(220 184 119 / 0.55);
+  animation: marker-ring 2.8s ease-out infinite;
+}
+@keyframes marker-ring {
+  from {
+    transform: scale(0.5);
+    opacity: 1;
+  }
+  to {
+    transform: scale(1.15);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .branch-marker--selected::after {
+    animation: none;
+  }
+}
+
+/* Headquarters marker */
+.hq-marker {
+  background: none;
+  border: 0;
+}
+.hq-badge {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  border-radius: 7px;
+  background: var(--color-gold);
+  box-shadow:
+    0 0 0 2px rgb(7 22 38 / 0.9),
+    0 6px 16px rgb(0 0 0 / 0.45);
+  color: #071626;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  transition: background 160ms ease;
+}
+.hq-marker:hover .hq-badge {
+  background: var(--color-gold-bright);
+}
+.hq-leader {
+  position: absolute;
+  left: 100%;
+  bottom: 100%;
+  width: 20px;
+  height: 20px;
+  overflow: visible;
+  pointer-events: none;
+  stroke: var(--color-gold);
+  stroke-width: 1.5;
+}
+.hq-point {
+  position: absolute;
+  left: calc(100% + 16px);
+  bottom: calc(100% + 16px);
+  width: 8px;
+  height: 8px;
+  background: var(--color-gold);
+  box-shadow: 0 0 0 1.5px #071626;
+  transform: rotate(45deg);
+  pointer-events: none;
+}
+
+.country-label {
+  background: none;
+  border: 0;
+  color: #dfe5ec;
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: 0.17em;
+  text-align: center;
+  pointer-events: none;
+}
+
+/* Hover tooltip */
+.leaflet-tooltip.map-tip {
+  background: rgb(10 27 45 / 0.96);
+  border: 1px solid var(--color-line);
+  border-radius: 6px;
+  box-shadow: 0 6px 18px rgb(0 0 0 / 0.35);
+  color: var(--color-ink);
+  font-size: 14px;
+  padding: 5px 10px;
+}
+.leaflet-tooltip.map-tip::before {
+  display: none;
+}
+
+/* Selected branch callout, with a leader line back to the marker */
+.leaflet-tooltip.map-callout {
+  background: #09182a;
+  border: 1px solid var(--color-gold);
+  border-radius: 10px;
+  box-shadow: 0 10px 28px rgb(0 0 0 / 0.4);
+  color: var(--color-ink);
+  padding: 0;
+  white-space: nowrap;
+}
+.leaflet-tooltip.map-callout::before {
+  content: "";
+  position: absolute;
+  top: 54px;
+  width: 60px;
+  height: 1px;
+  margin: 0;
+  border: 0;
+  background: var(--color-gold);
+}
+.leaflet-tooltip-right.map-callout::before {
+  left: -68px;
+  transform: rotate(-16deg);
+}
+.leaflet-tooltip-left.map-callout::before {
+  right: -68px;
+  transform: rotate(16deg);
+}
+
+@keyframes panel-in {
+  from {
+    opacity: 0;
+    transform: translateX(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.panel-enter {
+  animation: panel-in 220ms ease-out;
+}
+
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.pop-enter {
+  animation: pop-in 140ms ease-out;
+}
