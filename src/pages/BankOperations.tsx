@@ -6,11 +6,8 @@ import DashboardHeader from "../components/dashboard/DashboardHeader";
 import HeadquartersCard from "../components/dashboard/HeadquartersCard";
 import KPICards from "../components/dashboard/KPICards";
 import PakistanMap from "../components/dashboard/PakistanMap";
-import { BRANCHES } from "../data/branches";
 import { CALL_CENTER, MOBILE_APP } from "../data/channels";
-import { BANK_TOTALS } from "../data/headquarters";
 import { useBranchSelection } from "../hooks/useBranchSelection";
-import { formatNumber } from "../lib/seeded";
 
 const FLOATING_LAYOUT = "(min-width: 80rem)";
 const PANEL_GAP = 44;
@@ -121,11 +118,6 @@ export default function BankOperations() {
           <span className="inline-flex items-center gap-1.5 text-soft">
             <span className="size-2 rounded-full bg-[#bfe3ff] ring-1 ring-brand" aria-hidden="true" />
             Branch
-          </span>
-          <span>
-            {formatNumber(BRANCHES.length)} branches from UBL’s July 2024 list, at approximate city locations. Bank
-            total is {formatNumber(BANK_TOTALS.branches)} at Dec 2025. Staff, apps, agents and channel figures are
-            illustrative.
           </span>
         </div>
 
