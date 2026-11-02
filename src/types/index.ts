@@ -8,11 +8,14 @@ export type AppId =
   | "cardsManagement"
   | "cashManagement"
   | "complaintDesk"
-  | "shariahDesk";
+  | "shariahDesk"
+  | ChannelKey;
 
 export type AppLinkKey = AppId | "digitalEye";
 
-export type BranchType = "Retail" | "Corporate" | "Islamic" | "Regional Hub";
+export type ChannelKey = "callCenter" | "mobileApp";
+
+export type BranchType = "Retail" | "Corporate" | "Islamic";
 export type BranchStatus = "Operational" | "Limited Service" | "Under Maintenance";
 export type DeploymentStatus = "In Use" | "Pilot" | "Upgrading";
 export type AgentStatus = "Active" | "Supervised" | "Paused";
@@ -37,30 +40,28 @@ export interface Branch {
   id: string;
   name: string;
   city: string;
+  district: string;
   province: string;
+  region: string;
+  cluster: string;
+  /** Urban or Rural, as published. */
+  area: string;
+  address: string;
+  /** Approximate, placed at city level. */
   lat: number;
   lng: number;
-  /** Primary branches draw larger on the country view; secondary ones sit beside them. */
+  /** Primary branches draw larger on the country view; secondary ones draw on the canvas layer. */
   tier: "primary" | "secondary";
   type: BranchType;
-  established: number;
   status: BranchStatus;
+  atm: boolean;
+  lockers: boolean;
+  saturdayBanking: boolean;
   staff: number;
   dailyTransactions: number;
   transactionsTrend: number;
   activeCustomers: number;
   customersTrend: number;
-  sla: number;
-  region: string;
-  /** PKR millions */
-  deposits: number;
-  /** PKR millions */
-  advances: number;
-  accounts: number;
-  atms: number;
-  digitalAdoption: number;
-  saturdayBanking: boolean;
-  lockers: boolean;
   applications: BranchApplication[];
   agents: BranchAgent[];
   image: string;
@@ -109,7 +110,6 @@ export interface ActivityEvent {
 
 export interface Department {
   name: string;
-  head: string;
   headcount: number;
   focus: string;
 }
@@ -117,18 +117,10 @@ export interface Department {
 export interface TrendPoint {
   month: string;
   transactions: number;
-  sla: number;
   incidents: number;
-  /** PKR billions */
-  deposits: number;
   digitalShare: number;
 }
 
-export interface ProvinceShare {
-  name: string;
-  branches: number;
-  islamic: number;
-}
 
 export interface Notification {
   id: string;
@@ -137,4 +129,30 @@ export interface Notification {
   time: string;
   branchId?: string;
   href?: string;
+}
+
+export interface ChannelMetric {
+  value: string;
+  label: string;
+  trend: string;
+  direction: "up" | "down";
+}
+
+export interface ChannelRange {
+  id: string;
+  label: string;
+  ticks: number[];
+  points: { label: string; value: number }[];
+}
+
+export interface ChannelOverview {
+  appKey: ChannelKey;
+  title: string;
+  subtitle: string;
+  chartTitle: string;
+  chartType: "area" | "bar";
+  metrics: ChannelMetric[];
+  ranges: ChannelRange[];
+  formatTick: (value: number) => string;
+  formatValue: (value: number) => string;
 }

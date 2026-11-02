@@ -12,4 +12,6 @@ interface ImportMetaEnv {
   readonly VITE_CASH_MANAGEMENT_URL?: string;
   readonly VITE_COMPLAINT_DESK_URL?: string;
   readonly VITE_SHARIAH_DESK_URL?: string;
+  readonly VITE_CALL_CENTER_URL?: string;
+  readonly VITE_MOBILE_APP_URL?: string;
 }

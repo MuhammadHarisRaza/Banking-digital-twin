@@ -8,25 +8,23 @@ interface Props {
 }
 
 export default function BranchHeader({ branch, onClose }: Props) {
-  const typeLabel = branch.type === "Regional Hub" ? branch.type : `${branch.type} Branch`;
-
   return (
-    <div className="flex items-start gap-3 sm:gap-5">
-      <Store className="mt-0.5 size-11 shrink-0 text-gold" strokeWidth={1.4} aria-hidden="true" />
+    <div className="flex items-center gap-2.5">
+      <Store className="size-8 shrink-0 text-brand" strokeWidth={1.4} aria-hidden="true" />
       <div className="min-w-0 flex-1">
-        <h2 className="text-[22px] leading-tight font-bold tracking-tight sm:truncate sm:text-[25px]">{branch.name}</h2>
-        <p className="text-[16px] leading-snug text-soft">
+        <h2 className="text-[19px] leading-tight font-bold tracking-tight sm:truncate">{branch.name}</h2>
+        <p className="text-[13px] leading-snug text-soft">
           {branch.id}
-          <span className="mx-2.5 text-mute">|</span>
-          {typeLabel}
-          <span className="mx-2.5 text-mute">|</span>
-          Since {branch.established}
+          <span className="mx-1.5 text-mute">|</span>
+          {branch.type} Branch
+          <span className="mx-1.5 text-mute">|</span>
+          {branch.city}
         </p>
         <div className="mt-1.5 sm:hidden">
           <StatusBadge status={branch.status} variant="pill" />
         </div>
       </div>
-      <div className="flex shrink-0 items-center gap-4">
+      <div className="flex shrink-0 items-center gap-2">
         <span className="max-sm:hidden">
           <StatusBadge status={branch.status} variant="pill" />
         </span>
@@ -34,9 +32,9 @@ export default function BranchHeader({ branch, onClose }: Props) {
           type="button"
           onClick={onClose}
           aria-label="Close branch details"
-          className="grid size-9 place-items-center rounded-full text-ink transition-colors hover:bg-white/8"
+          className="grid size-7 place-items-center rounded-full text-ink transition-colors hover:bg-brand/10"
         >
-          <X className="size-6" strokeWidth={1.6} />
+          <X className="size-5" strokeWidth={1.6} />
         </button>
       </div>
     </div>

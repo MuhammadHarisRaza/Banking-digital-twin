@@ -8,11 +8,14 @@ import terrainBounds from "../../assets/geo/terrain-bounds.json";
 import terrain from "../../assets/geo/pakistan-terrain.webp";
 import { BRANCHES } from "../../data/branches";
 import type { Branch } from "../../types";
+import BranchDots from "./BranchDots";
 import BranchMarker from "./BranchMarker";
+import ConnectionArcs from "./ConnectionArcs";
 import HeadquartersMarker from "./HeadquartersMarker";
 
+const PRIMARY_BRANCHES = BRANCHES.filter((branch) => branch.tier === "primary");
 const PAKISTAN_BOUNDS = L.latLngBounds([23.6, 60.85], [37.1, 77.85]);
-const PAN_LIMITS = L.latLngBounds([14, 40], [46, 110]);
+const PAN_LIMITS = L.latLngBounds([5, 20], [55, 125]);
 const TERRAIN_BOUNDS = L.latLngBounds(
   [terrainBounds.south, terrainBounds.west],
   [terrainBounds.north, terrainBounds.east],
@@ -29,28 +32,32 @@ const PROVINCE_STYLE: L.PathOptions = { color: "#9fb2c6", weight: 0.8, opacity: 
 const OUTLINE_STYLE: L.PathOptions = { color: "#c7d3df", weight: 1.3, opacity: 0.85, fill: false };
 
 const CONTROL =
-  "grid size-9 place-items-center text-soft transition-colors hover:bg-white/8 hover:text-ink";
+  "grid size-9 place-items-center text-soft transition-colors hover:bg-brand/10 hover:text-ink";
 
 interface Props {
   selected: Branch | null;
   onSelect: (id: string) => void;
-  /** Width covered by the floating panel, kept clear when fitting the country. */
+  /** Widths covered by the side cards or floating panel, kept clear when fitting the country. */
+  leftInset: number;
   rightInset: number;
+  leftHub: HTMLElement | null;
+  rightHub: HTMLElement | null;
 }
 
-export default function PakistanMap({ selected, onSelect, rightInset }: Props) {
+export default function PakistanMap({ selected, onSelect, leftInset, rightInset, leftHub, rightHub }: Props) {
   const [map, setMap] = useState<L.Map | null>(null);
-  const insetRef = useRef(rightInset);
-  insetRef.current = rightInset;
+  const insetRef = useRef({ left: leftInset, right: rightInset });
+  insetRef.current = { left: leftInset, right: rightInset };
 
   const fitCountry = useCallback(
     (animate: boolean) => {
       if (!map) return;
+      const { left, right } = insetRef.current;
       const options = {
-        paddingTopLeft: [18, 16] as L.PointTuple,
-        paddingBottomRight: [insetRef.current + 18, 30] as L.PointTuple,
+        paddingTopLeft: [left + 18, 16] as L.PointTuple,
+        paddingBottomRight: [right + 18, 64] as L.PointTuple,
       };
-      map.setMinZoom(map.getBoundsZoom(PAKISTAN_BOUNDS, false, L.point(36 + insetRef.current, 46)) - 0.6);
+      map.setMinZoom(map.getBoundsZoom(PAKISTAN_BOUNDS, false, L.point(36 + left + right, 80)) - 0.6);
       map.fitBounds(PAKISTAN_BOUNDS, { ...options, animate });
     },
     [map],
@@ -70,14 +77,14 @@ export default function PakistanMap({ selected, onSelect, rightInset }: Props) {
 
   useEffect(() => {
     fitCountry(true);
-  }, [rightInset, fitCountry]);
+  }, [leftInset, rightInset, fitCountry]);
 
   // Search can select a branch that sits outside the current zoomed view.
   useEffect(() => {
     if (!map || !selected) return;
     map.panInside([selected.lat, selected.lng], {
-      paddingTopLeft: [50, 90],
-      paddingBottomRight: [insetRef.current + 50, 50],
+      paddingTopLeft: [insetRef.current.left + 50, 90],
+      paddingBottomRight: [insetRef.current.right + 50, 50],
     });
   }, [map, selected]);
 
@@ -100,14 +107,23 @@ export default function PakistanMap({ selected, onSelect, rightInset }: Props) {
         <ImageOverlay url={terrain} bounds={TERRAIN_BOUNDS} />
         <GeoJSON data={provinces as GeoJSON.FeatureCollection} style={PROVINCE_STYLE} interactive={false} />
         <GeoJSON data={outline as GeoJSON.Feature} style={OUTLINE_STYLE} interactive={false} />
-        <Marker position={[28.35, 64.9]} icon={LABEL_ICON} interactive={false} keyboard={false} />
-        {BRANCHES.map((branch) => (
+        <Marker position={[28.3, 64.75]} icon={LABEL_ICON} interactive={false} keyboard={false} />
+        <BranchDots onSelect={onSelect} />
+        {PRIMARY_BRANCHES.map((branch) => (
           <BranchMarker key={branch.id} branch={branch} selected={branch.id === selected?.id} onSelect={onSelect} />
         ))}
+        {selected?.tier === "secondary" && (
+          <BranchMarker key={selected.id} branch={selected} selected onSelect={onSelect} />
+        )}
         <HeadquartersMarker />
       </MapContainer>
 
-      <div className="absolute top-3 left-4 z-[500] flex flex-col divide-y divide-line overflow-hidden rounded-lg border border-line bg-panel/90 desk:left-11">
+      <ConnectionArcs map={map} leftHub={leftHub} rightHub={rightHub} visible={!selected} />
+
+      <div
+        style={{ left: leftInset ? leftInset + 14 : undefined }}
+        className="absolute top-3 left-4 z-[520] flex flex-col divide-y divide-line overflow-hidden rounded-lg border border-line bg-panel/90 transition-[left] duration-200 sm:left-6 xl:left-11"
+      >
         <button type="button" aria-label="Zoom in" className={CONTROL} onClick={() => map?.zoomIn()}>
           <Plus className="size-4.5" />
         </button>

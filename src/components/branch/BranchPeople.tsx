@@ -7,7 +7,7 @@ export default function BranchPeople({ branch }: { branch: Branch }) {
   const employees = useMemo(() => getEmployees(branch), [branch]);
 
   return (
-    <div className="-mx-3 -mt-3 overflow-x-auto">
+    <div className="-mx-2 -mt-2 overflow-x-auto">
       <table className="data-table">
         <thead>
           <tr>

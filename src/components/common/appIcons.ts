@@ -3,11 +3,13 @@ import {
   Coins,
   CreditCard,
   FileText,
+  Headset,
   LayoutDashboard,
   Layers,
   MessagesSquare,
   Scale,
   ScanSearch,
+  Smartphone,
   UserRoundSearch,
   type LucideIcon,
 } from "lucide-react";
@@ -24,4 +26,6 @@ export const APP_ICONS: Record<AppId, LucideIcon> = {
   cashManagement: Coins,
   complaintDesk: MessagesSquare,
   shariahDesk: Scale,
+  callCenter: Headset,
+  mobileApp: Smartphone,
 };

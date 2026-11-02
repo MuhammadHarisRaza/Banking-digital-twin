@@ -1,17 +1,17 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Bell, Building2, Camera, Landmark, MapPin, RotateCcw, Search, Users, X } from "lucide-react";
 import { Link, useNavigate } from "react-router";
+import ublLogo from "../../assets/images/ubl-logo.png";
 import { BRANCHES } from "../../data/branches";
 import { HEADQUARTERS, NOTIFICATIONS } from "../../data/headquarters";
 import { useAppLauncher } from "../../hooks/useAppLauncher";
 import { useDismiss } from "../../hooks/useDismiss";
 import type { Notification } from "../../types";
-import AlaraLogo from "../common/AlaraLogo";
 
 const HQ_RESULT = { id: "hq", name: HEADQUARTERS.name, meta: "Headquarters", href: "/headquarters" };
 
 const ICON_BUTTON =
-  "relative grid size-10 place-items-center rounded-full text-ink transition-colors hover:bg-white/8";
+  "relative grid size-10 place-items-center rounded-full text-ink transition-colors hover:bg-brand/10";
 
 function BranchSearch() {
   const navigate = useNavigate();
@@ -32,9 +32,9 @@ function BranchSearch() {
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
-    const branches = BRANCHES.filter((b) => `${b.name} ${b.city} ${b.province} ${b.id}`.toLowerCase().includes(q)).map(
-      (b) => ({ id: b.id, name: b.name, meta: b.id, href: `/?branch=${b.id}` }),
-    );
+    const branches = BRANCHES.filter((b) => `${b.name} ${b.city} ${b.province} ${b.id}`.toLowerCase().includes(q))
+      .slice(0, 60)
+      .map((b) => ({ id: b.id, name: b.name, meta: b.id, href: `/?branch=${b.id}` }));
     return `${HEADQUARTERS.name} headquarters karachi`.toLowerCase().includes(q) ? [HQ_RESULT, ...branches] : branches;
   }, [query]);
 
@@ -65,7 +65,7 @@ function BranchSearch() {
         <Search className="size-6" strokeWidth={1.6} />
       </button>
       {open && (
-        <div className="pop-enter absolute top-12 right-0 z-[1200] w-[min(420px,calc(100vw-32px))] overflow-hidden rounded-xl border border-line bg-panel shadow-2xl shadow-black/50 max-sm:-right-24">
+        <div className="pop-enter absolute top-12 right-0 z-[1200] w-[min(420px,calc(100vw-32px))] overflow-hidden rounded-xl border border-line bg-panel shadow-2xl shadow-[#0b2a45]/15 max-sm:-right-24">
           <div className="flex items-center gap-2.5 border-b border-line px-4">
             <Search className="size-4.5 text-mute" aria-hidden="true" />
             <input
@@ -97,12 +97,12 @@ function BranchSearch() {
                     type="button"
                     onMouseEnter={() => setActive(i)}
                     onClick={() => choose(b.href)}
-                    className={`flex w-full items-center gap-3 px-4 py-2 text-left ${i === active ? "bg-white/6" : ""}`}
+                    className={`flex w-full items-center gap-3 px-4 py-2 text-left ${i === active ? "bg-brand/10" : ""}`}
                   >
                     {b.id === HQ_RESULT.id ? (
-                      <Landmark className="size-4 shrink-0 text-gold" strokeWidth={1.7} aria-hidden="true" />
+                      <Landmark className="size-4 shrink-0 text-brand" strokeWidth={1.7} aria-hidden="true" />
                     ) : (
-                      <MapPin className="size-4 shrink-0 text-gold" strokeWidth={1.7} aria-hidden="true" />
+                      <MapPin className="size-4 shrink-0 text-brand" strokeWidth={1.7} aria-hidden="true" />
                     )}
                     <span className="min-w-0 flex-1 truncate text-[15.5px]">{b.name}</span>
                     <span className="text-[14px] text-mute">{b.meta}</span>
@@ -141,17 +141,17 @@ function Notifications() {
         onClick={() => setOpen(!open)}
       >
         <Bell className="size-6" strokeWidth={1.6} />
-        {unread > 0 && <span className="absolute top-1 right-1 size-2.5 rounded-full bg-gold ring-2 ring-page" />}
+        {unread > 0 && <span className="absolute top-1 right-1 size-2.5 rounded-full bg-brand ring-2 ring-page" />}
       </button>
       {open && (
-        <div className="pop-enter absolute top-12 right-0 z-[1200] w-[min(380px,calc(100vw-32px))] overflow-hidden rounded-xl border border-line bg-panel shadow-2xl shadow-black/50 max-sm:-right-12">
+        <div className="pop-enter absolute top-12 right-0 z-[1200] w-[min(380px,calc(100vw-32px))] overflow-hidden rounded-xl border border-line bg-panel shadow-2xl shadow-[#0b2a45]/15 max-sm:-right-12">
           <div className="flex items-center justify-between border-b border-line px-4 py-3">
             <span className="text-[16px] font-semibold">Notifications</span>
             <button
               type="button"
               disabled={unread === 0}
               onClick={() => setRead(new Set(NOTIFICATIONS.map((n) => n.id)))}
-              className="text-[14px] text-gold enabled:hover:text-gold-bright disabled:text-mute"
+              className="text-[14px] text-brand enabled:hover:text-brand-bright disabled:text-mute"
             >
               Mark all as read
             </button>
@@ -162,9 +162,9 @@ function Notifications() {
                 <button
                   type="button"
                   onClick={() => openItem(n)}
-                  className="flex w-full gap-3 border-b border-line-soft px-4 py-3 text-left transition-colors last:border-0 hover:bg-white/5"
+                  className="flex w-full gap-3 border-b border-line-soft px-4 py-3 text-left transition-colors last:border-0 hover:bg-brand/10"
                 >
-                  <span className={`mt-1.5 size-2 shrink-0 rounded-full ${read.has(n.id) ? "bg-transparent" : "bg-gold"}`} />
+                  <span className={`mt-1.5 size-2 shrink-0 rounded-full ${read.has(n.id) ? "bg-transparent" : "bg-brand"}`} />
                   <span className="min-w-0 flex-1">
                     <span className="block text-[15.5px] leading-snug">{n.title}</span>
                     <span className="block text-[14px] leading-snug text-soft">{n.detail}</span>
@@ -201,12 +201,12 @@ function ProfileMenu() {
         aria-label="Open profile menu"
         aria-expanded={open}
         onClick={() => setOpen(!open)}
-        className="grid size-11 place-items-center rounded-full bg-[#2a3c50] text-[16px] font-semibold transition-colors hover:bg-[#35495f]"
+        className="grid size-11 place-items-center rounded-full bg-brand text-[16px] font-semibold text-white transition-colors hover:bg-brand-bright"
       >
         HR
       </button>
       {open && (
-        <div className="pop-enter absolute top-13 right-0 z-[1200] w-72 overflow-hidden rounded-xl border border-line bg-panel shadow-2xl shadow-black/50">
+        <div className="pop-enter absolute top-13 right-0 z-[1200] w-72 overflow-hidden rounded-xl border border-line bg-panel shadow-2xl shadow-[#0b2a45]/15">
           <div className="border-b border-line px-4 py-3">
             <div className="text-[16px] font-semibold">Hira Rehman</div>
             <div className="text-[14px] text-soft">Regional Operations Head</div>
@@ -221,9 +221,9 @@ function ProfileMenu() {
                     run();
                     setOpen(false);
                   }}
-                  className="flex w-full items-center gap-3 px-4 py-2 text-left text-[15.5px] text-soft transition-colors hover:bg-white/5 hover:text-ink"
+                  className="flex w-full items-center gap-3 px-4 py-2 text-left text-[15.5px] text-soft transition-colors hover:bg-brand/10 hover:text-ink"
                 >
-                  <Icon className="size-4.5 text-gold" strokeWidth={1.6} aria-hidden="true" />
+                  <Icon className="size-4.5 text-brand" strokeWidth={1.6} aria-hidden="true" />
                   {label}
                 </button>
               </li>
@@ -237,13 +237,13 @@ function ProfileMenu() {
 
 export default function TopHeader() {
   return (
-    <header className="relative z-[1100] flex h-[70px] shrink-0 items-center justify-between border-b border-line bg-page px-4 sm:px-6 desk:px-11">
-      <div className="flex items-center gap-7">
-        <Link to="/" className="flex items-center gap-3" aria-label="Alara home">
-          <AlaraLogo className="h-8 w-9" />
-          <span className="text-[28px] leading-none font-semibold tracking-tight">Alara</span>
+    <header className="relative z-[1100] flex h-[70px] shrink-0 items-center justify-between border-b border-line bg-panel px-4 sm:px-6 desk:px-11">
+      <div className="flex items-center gap-4">
+        <Link to="/" aria-label="UBL Bank Operations home">
+          <img src={ublLogo} alt="UBL, where you come first" className="h-[52px] w-auto" />
         </Link>
         <span className="h-9 w-px bg-line" aria-hidden="true" />
+        <span className="text-[20px] leading-none font-semibold tracking-tight text-soft">Alara</span>
       </div>
       <div className="flex items-center gap-2 sm:gap-3">
         <BranchSearch />

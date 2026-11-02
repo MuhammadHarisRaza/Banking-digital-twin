@@ -57,7 +57,7 @@ function BranchMarker({ branch, selected, onSelect }: Props) {
           className="map-callout"
         >
           <div className="flex items-center gap-3.5 px-4 py-2.5">
-            <Store className="size-8 text-gold" strokeWidth={1.5} aria-hidden="true" />
+            <Store className="size-8 text-brand" strokeWidth={1.5} aria-hidden="true" />
             <div>
               <div className="text-[18px] leading-tight font-semibold">{branch.name}</div>
               <div className="text-[15px] leading-tight text-soft">

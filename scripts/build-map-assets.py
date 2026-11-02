@@ -79,9 +79,9 @@ shade = np.sin(alt) * np.cos(slope) + np.cos(alt) * np.sin(slope) * np.cos(az - 
 shade = np.clip(shade, 0, 1)
 relief = np.clip(np.log1p(elev) / np.log1p(6500), 0, 1)
 
-# Deep navy ramp: lit slopes rise toward slate, plains stay close to the page tone.
-low = np.array([13, 29, 46], dtype=np.float32)
-high = np.array([58, 80, 104], dtype=np.float32)
+# UBL blue ramp: lit slopes rise toward sky blue, plains stay a deep brand blue.
+low = np.array([0, 66, 120], dtype=np.float32)
+high = np.array([70, 150, 208], dtype=np.float32)
 t = np.clip((shade - 0.42) * 1.55 + relief * 0.22, 0, 1)[..., None]
 rgb = low + (high - low) * t
 

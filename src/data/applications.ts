@@ -11,4 +11,6 @@ export const APPLICATIONS: Record<AppId, Application> = {
   cashManagement: { id: "cashManagement", name: "Cash Management", version: "v2.3", category: "Corporate" },
   complaintDesk: { id: "complaintDesk", name: "Complaint Desk", version: "v1.9", category: "Customer" },
   shariahDesk: { id: "shariahDesk", name: "Shariah Desk", version: "v1.2", category: "Islamic Banking" },
+  callCenter: { id: "callCenter", name: "Customer Experience", version: "v4.0", category: "Call Center" },
+  mobileApp: { id: "mobileApp", name: "Mobile App", version: "v6.2", category: "Digital Banking" },
 };

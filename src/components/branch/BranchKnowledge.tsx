@@ -8,7 +8,7 @@ export default function BranchKnowledge({ branch }: { branch: Branch }) {
   const knowledge = useMemo(() => getKnowledge(branch), [branch]);
 
   return (
-    <div className="-mx-3 -mt-3 overflow-x-auto">
+    <div className="-mx-2 -mt-2 overflow-x-auto">
       <table className="data-table">
         <thead>
           <tr>

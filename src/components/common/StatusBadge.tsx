@@ -22,10 +22,10 @@ const DOT: Record<Tone, string> = {
 };
 
 const PILL: Record<Tone, string> = {
-  ok: "bg-ok/15 text-[#a9ecc4]",
-  warn: "bg-warn/15 text-[#f4d59a]",
-  info: "bg-steel/15 text-[#c3d9f0]",
-  muted: "bg-white/8 text-soft",
+  ok: "bg-ok/12 text-[#0a6b44]",
+  warn: "bg-warn/15 text-[#8a5a10]",
+  info: "bg-steel/15 text-[#1f5f96]",
+  muted: "bg-brand/10 text-soft",
 };
 
 interface Props {
@@ -38,15 +38,15 @@ export default function StatusBadge({ status, variant = "inline" }: Props) {
 
   if (variant === "pill") {
     return (
-      <span className={`inline-flex items-center gap-2 rounded-full px-3.5 py-1 text-[15px] ${PILL[tone]}`}>
-        <span className={`size-2 rounded-full ${DOT[tone]}`} />
+      <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[13px] ${PILL[tone]}`}>
+        <span className={`size-1.5 rounded-full ${DOT[tone]}`} />
         {status}
       </span>
     );
   }
 
   return (
-    <span className="inline-flex items-center gap-2 text-[15px] text-soft">
+    <span className="inline-flex items-center gap-1.5 text-[13px] text-soft">
       <span className={`size-2 rounded-full ${DOT[tone]}`} />
       {status}
     </span>

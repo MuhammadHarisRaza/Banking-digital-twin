@@ -25,7 +25,7 @@ export default function BranchTabs({ active, onChange }: Props) {
   };
 
   return (
-    <div role="tablist" aria-label="Branch details" onKeyDown={onKeyDown} className="mt-2.5 flex gap-3 overflow-x-auto border-b border-line [scrollbar-width:none] sm:gap-0">
+    <div role="tablist" aria-label="Branch details" onKeyDown={onKeyDown} className="mt-1.5 flex gap-3 overflow-x-auto border-b border-line [scrollbar-width:none] sm:gap-0">
       {TABS.map(({ id, label }) => {
         const selected = id === active;
         return (
@@ -38,8 +38,8 @@ export default function BranchTabs({ active, onChange }: Props) {
             aria-controls="branch-tabpanel"
             tabIndex={selected ? 0 : -1}
             onClick={() => onChange(id)}
-            className={`flex-1 border-b-[3px] px-1 py-1.5 text-[16px] whitespace-nowrap transition-colors ${
-              selected ? "border-gold font-medium text-ink" : "border-transparent text-soft hover:text-ink"
+            className={`flex-1 border-b-2 px-1 py-1 text-[13.5px] whitespace-nowrap transition-colors ${
+              selected ? "border-brand font-medium text-ink" : "border-transparent text-soft hover:text-ink"
             }`}
           >
             {label}

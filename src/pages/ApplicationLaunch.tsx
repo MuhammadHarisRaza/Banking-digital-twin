@@ -15,6 +15,8 @@ const ENV_VARS: Record<AppId, string> = {
   cashManagement: "VITE_CASH_MANAGEMENT_URL",
   complaintDesk: "VITE_COMPLAINT_DESK_URL",
   shariahDesk: "VITE_SHARIAH_DESK_URL",
+  callCenter: "VITE_CALL_CENTER_URL",
+  mobileApp: "VITE_MOBILE_APP_URL",
 };
 
 const CAPABILITIES: Record<AppId, string[]> = {
@@ -28,6 +30,8 @@ const CAPABILITIES: Record<AppId, string[]> = {
   cashManagement: ["Vault forecasting", "Corporate collections", "Cash-in-transit requests"],
   complaintDesk: ["Complaint intake", "Resolution tracking", "Turnaround reporting"],
   shariahDesk: ["Product compliance checks", "Shariah review queue"],
+  callCenter: ["Omni-channel case handling", "Agent performance", "Customer satisfaction reporting"],
+  mobileApp: ["Customer adoption", "Transaction monitoring", "App availability"],
 };
 
 export default function ApplicationLaunch() {
@@ -44,7 +48,7 @@ export default function ApplicationLaunch() {
       title={app.name}
       tagline={`${app.category} application`}
       icon={APP_ICONS[app.id]}
-      accent="gold"
+      accent="brand"
       capabilities={CAPABILITIES[app.id]}
     />
   );

@@ -8,14 +8,14 @@ const APPS: { key: AppLinkKey; title: string; description: string; icon: LucideI
     title: "Digital Eye",
     description: "Branch Surveillance & Operations",
     icon: Camera,
-    style: "border-[#3f6289] bg-gradient-to-r from-[#17324f] to-[#10253b] hover:from-[#1d3c5e] hover:to-[#142d47]",
+    style: "border-[#005a96] bg-gradient-to-r from-[#0074bf] to-[#005a96] hover:from-[#0069ad] hover:to-[#004f85]",
   },
   {
     key: "customer360",
     title: "Customer 360 (C360)",
     description: "Customer View & Relationship Management",
     icon: Users,
-    style: "border-[#356f58] bg-gradient-to-r from-[#17463a] to-[#123229] hover:from-[#1c5445] hover:to-[#163c31]",
+    style: "border-[#0b6045] bg-gradient-to-r from-[#0f7a55] to-[#0b6045] hover:from-[#0d6f4d] hover:to-[#09543c]",
   },
 ];
 
@@ -23,20 +23,20 @@ export default function ApplicationLaunchButtons({ branchId }: { branchId: strin
   const launch = useAppLauncher();
 
   return (
-    <div className="mt-3 flex gap-3.5 max-sm:flex-col">
+    <div className="mt-2 flex gap-2 max-sm:flex-col">
       {APPS.map(({ key, title, description, icon: Icon, style }) => (
         <button
           key={key}
           type="button"
           onClick={() => launch(key, branchId)}
-          className={`group flex min-w-0 flex-auto items-center gap-3 rounded-lg border px-3.5 py-2.5 2xl:gap-4 2xl:px-5 text-left transition-colors ${style}`}
+          className={`group flex min-w-0 flex-auto items-center gap-2 rounded-lg border px-2.5 py-1.5 text-left text-white transition-colors ${style}`}
         >
-          <Icon className="size-7 shrink-0 2xl:size-8" strokeWidth={1.5} aria-hidden="true" />
+          <Icon className="size-5 shrink-0" strokeWidth={1.5} aria-hidden="true" />
           <span className="min-w-0 flex-1">
-            <span className="block truncate text-[19px] leading-tight font-semibold">{title}</span>
-            <span className="block text-[13.5px] leading-tight text-[#d6dde5]">{description}</span>
+            <span className="block truncate text-[15px] leading-tight font-semibold">{title}</span>
+            <span className="block text-[11.5px] leading-tight text-white/90">{description}</span>
           </span>
-          <ArrowRight className="size-5 shrink-0 transition-transform group-hover:translate-x-0.5" strokeWidth={1.8} aria-hidden="true" />
+          <ArrowRight className="size-4 shrink-0 transition-transform group-hover:translate-x-0.5" strokeWidth={1.8} aria-hidden="true" />
         </button>
       ))}
     </div>

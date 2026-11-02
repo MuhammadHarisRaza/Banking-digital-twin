@@ -10,7 +10,7 @@ const TEMPLATES: [ActivityKind, string, (b: Branch) => string][] = [
   ["transaction", "Peak-hour transaction volume reached", (b) => `${Math.round(b.dailyTransactions * 0.12)} transactions in one hour`],
   ["system", "ATM cash replenishment confirmed", () => "On-site machine restocked and tested"],
   ["people", "Service quality coaching held", () => "Customer service team session recorded"],
-  ["compliance", "KYC refresh batch reviewed", (b) => `${Math.round(b.accounts * 0.002)} account files checked`],
+  ["compliance", "KYC refresh batch reviewed", (b) => `${Math.round(b.activeCustomers * 0.003)} account files checked`],
   ["transaction", "Clearing batch submitted", () => "Inward and outward instruments cleared"],
   ["agent", "Agent output sampled by supervisor", () => "Quality review logged with no corrections"],
   ["system", "Backup connectivity tested", () => "Failover link switched and restored"],

@@ -65,4 +65,14 @@ export const APP_LINKS: Record<AppLinkKey, AppLink> = {
     url: env.VITE_SHARIAH_DESK_URL ?? "",
     fallbackRoute: "/apps/shariahDesk",
   },
+  callCenter: {
+    name: "Customer Experience",
+    url: env.VITE_CALL_CENTER_URL ?? "",
+    fallbackRoute: "/apps/callCenter",
+  },
+  mobileApp: {
+    name: "Mobile App",
+    url: env.VITE_MOBILE_APP_URL ?? "",
+    fallbackRoute: "/apps/mobileApp",
+  },
 };

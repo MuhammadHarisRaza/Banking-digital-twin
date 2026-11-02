@@ -7,7 +7,13 @@ export default defineConfig({
   server: { port: 5183 },
   build: {
     rollupOptions: {
-      output: { manualChunks: { map: ["leaflet", "react-leaflet"] } },
+      output: {
+        manualChunks(id) {
+          if (id.includes("ubl-branches.json")) return "branch-data";
+          if (id.includes("node_modules/leaflet") || id.includes("node_modules/react-leaflet")) return "map";
+          if (id.includes("node_modules/recharts")) return "charts";
+        },
+      },
     },
   },
 });

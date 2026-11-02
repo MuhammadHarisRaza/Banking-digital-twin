@@ -30,9 +30,9 @@ export default function BranchDetailsPanel({ branch, onClose, className = "", re
     <aside
       ref={ref}
       aria-label={`${branch.name} details`}
-      className={`panel-enter flex flex-col overflow-hidden rounded-2xl border border-[#3a4f65] bg-panel/97 shadow-2xl shadow-black/40 ${className}`}
+      className={`panel-enter flex flex-col overflow-hidden rounded-xl border border-line bg-panel/97 shadow-2xl shadow-[#0b2a45]/15 ${className}`}
     >
-      <div className="shrink-0 px-6 pt-4">
+      <div className="shrink-0 px-4 pt-3">
         <BranchHeader branch={branch} onClose={onClose} />
         <BranchSummary branch={branch} onOpenTab={setTab} />
         <ApplicationLaunchButtons branchId={branch.id} />
@@ -43,7 +43,7 @@ export default function BranchDetailsPanel({ branch, onClose, className = "", re
         role="tabpanel"
         id="branch-tabpanel"
         tabIndex={0}
-        className="thin-scroll min-h-[170px] flex-1 overflow-auto px-6 pt-3 pb-4 outline-none"
+        className="thin-scroll min-h-[100px] flex-1 overflow-auto px-4 pt-2 pb-3 outline-none"
       >
         {tab === "overview" && <BranchOverview branch={branch} onViewAll={() => setTab("applications")} />}
         {tab === "people" && <BranchPeople branch={branch} />}
@@ -52,6 +52,10 @@ export default function BranchDetailsPanel({ branch, onClose, className = "", re
         {tab === "knowledge" && <BranchKnowledge branch={branch} />}
         {tab === "activity" && <BranchActivity branch={branch} />}
       </div>
+      <p className="shrink-0 border-t border-line-soft px-4 py-1 text-[11.5px] leading-snug text-mute">
+        Branch profile is from UBL’s published lists. Photo is representative. Staff, activity and performance are
+        illustrative.
+      </p>
     </aside>
   );
 }

@@ -36,7 +36,7 @@ export default function HeadquartersMarker() {
       position={[HEADQUARTERS.lat, HEADQUARTERS.lng]}
       icon={ICON}
       title="Open Headquarters Overview"
-      alt="Bank HQ, Karachi"
+      alt="UBL Head Office, Karachi"
       zIndexOffset={900}
       eventHandlers={eventHandlers}
     >
