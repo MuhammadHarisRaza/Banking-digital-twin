@@ -1,15 +1,15 @@
 import { ArrowLeft, MapPin, type LucideIcon } from "lucide-react";
 import { Link, useSearchParams } from "react-router";
 import { APP_LINKS } from "../../config/appLinks";
-import { getBranch } from "../../data/branches";
+import { useBranches } from "../../data/branches";
 import type { AppLinkKey } from "../../types";
 
 type Accent = "blue" | "green" | "brand";
 
 const ACCENTS: Record<Accent, { glow: string; icon: string; rule: string }> = {
-  blue: { glow: "from-[#cfe6f7]", icon: "text-steel", rule: "border-steel/40" },
-  green: { glow: "from-[#d3efe3]", icon: "text-ok", rule: "border-ok/40" },
-  brand: { glow: "from-[#cfe6f7]", icon: "text-brand", rule: "border-brand/40" },
+  blue: { glow: "from-steel/20", icon: "text-steel", rule: "border-steel/40" },
+  green: { glow: "from-ok/15", icon: "text-ok", rule: "border-ok/40" },
+  brand: { glow: "from-brand/20", icon: "text-brand", rule: "border-brand/40" },
 };
 
 interface Props {
@@ -26,6 +26,7 @@ interface Props {
 export default function AppLandingShell({ appKey, envVar, title, tagline, icon: Icon, accent, capabilities }: Props) {
   const [params] = useSearchParams();
   const branchId = params.get("branch");
+  const { getBranch } = useBranches();
   const branch = getBranch(branchId);
   const { glow, icon, rule } = ACCENTS[accent];
   const back = branch ? `/?branch=${branch.id}` : "/";
@@ -42,7 +43,7 @@ export default function AppLandingShell({ appKey, envVar, title, tagline, icon: 
           className="inline-flex items-center gap-2 rounded-full border border-line px-4 py-1.5 text-[15.5px] transition-colors hover:bg-brand/10"
         >
           <ArrowLeft className="size-4.5" aria-hidden="true" />
-          <span className="max-sm:hidden">Back to Bank Operations</span>
+          <span className="max-sm:hidden">Back to dashboard</span>
           <span className="sm:hidden">Back</span>
         </Link>
       </header>

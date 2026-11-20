@@ -19,6 +19,9 @@
   --color-ok: #0f8a56;
   --color-warn: #b7791f;
   --color-steel: #2f6fa8;
+  --color-accent: #0f7a55;
+  --color-map-dot: #bfe3ff;
+  --color-islamic: #0f7a55;
 }
 
 html,
@@ -77,13 +80,13 @@ button {
   white-space: nowrap;
 }
 .data-table tr:hover td {
-  background: rgb(0 116 191 / 0.05);
+  background: color-mix(in srgb, var(--color-brand) 5%, transparent);
 }
 
 /* Map stage */
 .map-stage {
   background:
-    radial-gradient(70% 80% at 50% 55%, rgb(0 116 191 / 0.1), transparent 70%),
+    radial-gradient(70% 80% at 50% 55%, color-mix(in srgb, var(--color-brand) 10%, transparent), transparent 70%),
     var(--color-page);
 }
 .map-stage::before {
@@ -93,6 +96,11 @@ button {
   pointer-events: none;
   opacity: 0.05;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='420'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.008 .05' numOctaves='3' seed='4'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .62 0 0 0 0 .8 0 0 0 .9 -.25'/%3E%3C/filter%3E%3Crect width='420' height='420' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* The terrain image is drawn in the default blue; ThemeSync rotates it toward the brand hue. */
+.map-terrain {
+  filter: hue-rotate(var(--map-hue-rotate, 0deg)) saturate(var(--map-saturate, 1));
 }
 
 .leaflet-container {
@@ -120,14 +128,14 @@ button {
   border-radius: 50%;
   background: #ffffff;
   box-shadow:
-    0 0 0 1.5px rgb(0 58 105 / 0.6),
-    0 0 7px 1px rgb(140 210 255 / 0.7);
+    0 0 0 1.5px color-mix(in srgb, var(--color-brand-bright) 60%, transparent),
+    0 0 7px 1px color-mix(in srgb, var(--color-map-dot) 70%, transparent);
   transition: transform 160ms ease, background 160ms ease;
 }
 .branch-marker--secondary .branch-dot {
   width: 7px;
   height: 7px;
-  background: #bfe3ff;
+  background: var(--color-map-dot);
 }
 .branch-marker:hover .branch-dot {
   transform: scale(1.35);
@@ -138,9 +146,9 @@ button {
   height: 20px;
   background: #ffffff;
   box-shadow:
-    0 0 0 4px rgb(0 62 112 / 0.95),
+    0 0 0 4px color-mix(in srgb, var(--color-brand-bright) 95%, transparent),
     0 0 0 6.5px #ffffff,
-    0 0 20px 8px rgb(120 200 255 / 0.7);
+    0 0 20px 8px color-mix(in srgb, var(--color-map-dot) 70%, transparent);
   transform: none;
 }
 .branch-marker--selected::after {
@@ -178,7 +186,7 @@ button {
   box-shadow:
     0 0 0 3px var(--color-panel),
     0 0 0 4.5px var(--color-brand),
-    0 0 16px 6px rgb(0 116 191 / 0.3);
+    0 0 16px 6px color-mix(in srgb, var(--color-brand) 30%, transparent);
 }
 
 /* Headquarters marker */
@@ -196,7 +204,7 @@ button {
   background: var(--color-brand);
   box-shadow:
     0 0 0 2px #ffffff,
-    0 6px 16px rgb(11 42 69 / 0.3);
+    0 6px 16px color-mix(in srgb, var(--color-ink) 30%, transparent);
   color: #ffffff;
   font-size: 15px;
   font-weight: 700;
@@ -236,7 +244,7 @@ button {
   font-size: 17px;
   font-weight: 600;
   letter-spacing: 0.15em;
-  text-shadow: 0 1px 3px rgb(0 40 80 / 0.9);
+  text-shadow: 0 1px 3px color-mix(in srgb, var(--color-ink) 90%, transparent);
   text-align: center;
   pointer-events: none;
 }
@@ -246,7 +254,7 @@ button {
   background: var(--color-panel);
   border: 1px solid var(--color-line);
   border-radius: 6px;
-  box-shadow: 0 6px 18px rgb(11 42 69 / 0.2);
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--color-ink) 20%, transparent);
   color: var(--color-ink);
   font-size: 14px;
   padding: 5px 10px;
@@ -260,7 +268,7 @@ button {
   background: var(--color-panel);
   border: 1px solid var(--color-brand);
   border-radius: 10px;
-  box-shadow: 0 10px 28px rgb(11 42 69 / 0.25);
+  box-shadow: 0 10px 28px color-mix(in srgb, var(--color-ink) 25%, transparent);
   color: var(--color-ink);
   padding: 0;
   white-space: nowrap;
@@ -273,7 +281,7 @@ button {
   height: 1px;
   margin: 0;
   border: 0;
-  background: #7cc4f2;
+  background: color-mix(in srgb, var(--color-brand) 55%, white);
 }
 .leaflet-tooltip-right.map-callout::before {
   left: -68px;

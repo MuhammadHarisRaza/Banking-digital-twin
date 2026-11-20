@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import L from "leaflet";
-import { getCityBranch } from "../../data/branches";
+import { useThemeColors } from "../../config/useBrand";
+import { useBranches, type BranchIndex } from "../../data/branches";
 import { CALL_CENTER_REACH, MOBILE_APP_REACH } from "../../data/channels";
 
 interface Props {
@@ -17,18 +18,28 @@ interface ArcSet {
   paths: string[];
 }
 
-function buildArcs(map: L.Map, hub: HTMLElement, cities: string[], id: string): ArcSet {
+/**
+ * The large branches each channel's lines reach. The configured cities are used when the branch list has them;
+ * otherwise the left card reaches the western half of the large branches and the right card the eastern half.
+ */
+function reachFor(index: BranchIndex, cities: string[], side: "west" | "east") {
+  const found = cities.map((c) => index.getCityBranch(c)).filter((b) => b !== undefined);
+  if (found.length >= 3) return found;
+  const sorted = [...index.primary].sort((a, b) => a.lng - b.lng);
+  const half = Math.ceil(sorted.length / 2);
+  return side === "west" ? sorted.slice(0, half) : sorted.slice(half);
+}
+
+function buildArcs(map: L.Map, hub: HTMLElement, targets: { lat: number; lng: number }[], id: string): ArcSet {
   const box = map.getContainer().getBoundingClientRect();
   const rect = hub.getBoundingClientRect();
   const hx = rect.left + rect.width / 2 - box.left;
   const hy = rect.top + rect.height / 2 - box.top;
 
-  const paths = cities.flatMap((city) => {
-    const branch = getCityBranch(city);
-    if (!branch) return [];
+  const paths = targets.map((branch) => {
     const { x, y } = map.latLngToContainerPoint([branch.lat, branch.lng]);
     const dx = x - hx;
-    return [`M${hx} ${hy}C${hx + dx * 0.42} ${hy} ${x - dx * 0.34} ${y} ${x} ${y}`];
+    return `M${hx} ${hy}C${hx + dx * 0.42} ${hy} ${x - dx * 0.34} ${y} ${x} ${y}`;
   });
 
   return { id, hubX: hx, centerX: box.width / 2, paths };
@@ -38,13 +49,16 @@ function buildArcs(map: L.Map, hub: HTMLElement, cities: string[], id: string): 
 export default function ConnectionArcs({ map, leftHub, rightHub, visible }: Props) {
   const [arcs, setArcs] = useState<ArcSet[]>([]);
   const [zooming, setZooming] = useState(false);
+  const index = useBranches();
+  const { brand } = useThemeColors();
 
   useEffect(() => {
-    if (!map || !leftHub || !rightHub || !visible) return;
+    if (!map || (!leftHub && !rightHub) || !visible) return;
+    // Either channel card can be hidden in Settings; draw lines only for the ones shown.
     const update = () =>
       setArcs([
-        buildArcs(map, leftHub, CALL_CENTER_REACH, "call-center-arc"),
-        buildArcs(map, rightHub, MOBILE_APP_REACH, "mobile-app-arc"),
+        ...(leftHub ? [buildArcs(map, leftHub, reachFor(index, CALL_CENTER_REACH, "west"), "call-center-arc")] : []),
+        ...(rightHub ? [buildArcs(map, rightHub, reachFor(index, MOBILE_APP_REACH, "east"), "mobile-app-arc")] : []),
       ]);
     const onZoomStart = () => setZooming(true);
     const onZoomEnd = () => {
@@ -65,7 +79,7 @@ export default function ConnectionArcs({ map, leftHub, rightHub, visible }: Prop
       map.off("zoomend", onZoomEnd);
       observer.disconnect();
     };
-  }, [map, leftHub, rightHub, visible]);
+  }, [map, leftHub, rightHub, visible, index]);
 
   return (
     <svg
@@ -77,8 +91,8 @@ export default function ConnectionArcs({ map, leftHub, rightHub, visible }: Prop
       <defs>
         {arcs.map(({ id, hubX, centerX }) => (
           <linearGradient key={id} id={id} gradientUnits="userSpaceOnUse" x1={hubX} y1="0" x2={centerX} y2="0">
-            <stop offset="0%" stopColor="#0074bf" stopOpacity={0.85} />
-            <stop offset="100%" stopColor="#0074bf" stopOpacity={0.28} />
+            <stop offset="0%" stopColor={brand} stopOpacity={0.85} />
+            <stop offset="100%" stopColor={brand} stopOpacity={0.28} />
           </linearGradient>
         ))}
       </defs>

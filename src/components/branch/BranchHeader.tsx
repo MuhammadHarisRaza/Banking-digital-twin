@@ -1,4 +1,5 @@
-import { Store, X } from "lucide-react";
+import { Box, Store, X } from "lucide-react";
+import { Link } from "react-router";
 import type { Branch } from "../../types";
 import StatusBadge from "../common/StatusBadge";
 
@@ -25,6 +26,14 @@ export default function BranchHeader({ branch, onClose }: Props) {
         </div>
       </div>
       <div className="flex shrink-0 items-center gap-2">
+        <Link
+          to={`/branches/${branch.id}/twin`}
+          title="Open the 3D twin of this branch"
+          className="inline-flex items-center gap-1.5 rounded-full bg-brand px-3 py-1 text-[13px] font-semibold text-white transition-colors hover:bg-brand-bright"
+        >
+          <Box className="size-4" strokeWidth={1.8} aria-hidden="true" />
+          3D Twin
+        </Link>
         <span className="max-sm:hidden">
           <StatusBadge status={branch.status} variant="pill" />
         </span>

@@ -11,12 +11,12 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { mix } from "../../config/color";
+import { useThemeColors } from "../../config/useBrand";
 import { useAppLauncher } from "../../hooks/useAppLauncher";
 import { useDismiss } from "../../hooks/useDismiss";
 import type { ChannelMetric, ChannelOverview, ChannelRange } from "../../types";
 
-const AXIS_TICK = { fill: "#3f5b73", fontSize: 12 };
-const GRID = "#e1ebf3";
 
 function Metric({ value, label, trend, direction }: ChannelMetric) {
   const Arrow = direction === "up" ? ArrowUp : ArrowDown;
@@ -57,7 +57,7 @@ function RangeMenu({ title, ranges, value, onChange }: {
         <ChevronDown className="size-3.5" aria-hidden="true" />
       </button>
       {open && (
-        <ul className="pop-enter absolute top-7 right-0 z-10 w-36 overflow-hidden rounded-lg border border-line bg-panel py-1 shadow-xl shadow-[#0b2a45]/15">
+        <ul className="pop-enter absolute top-7 right-0 z-10 w-36 overflow-hidden rounded-lg border border-line bg-panel py-1 shadow-xl shadow-ink/15">
           {ranges.map((range) => (
             <li key={range.id}>
               <button
@@ -88,7 +88,7 @@ function ChartTooltip({ active, payload, label, format }: {
 }) {
   if (!active || !payload?.length) return null;
   return (
-    <div className="rounded-md border border-line bg-panel px-3 py-1.5 text-[14px] shadow-lg shadow-[#0b2a45]/15">
+    <div className="rounded-md border border-line bg-panel px-3 py-1.5 text-[14px] shadow-lg shadow-ink/15">
       <div className="text-mute">{label}</div>
       <div className="font-semibold">{format(Number(payload[0].value))}</div>
     </div>
@@ -99,6 +99,9 @@ function ChannelChart({ channel, range }: { channel: ChannelOverview; range: Cha
   const { formatTick, formatValue, appKey } = channel;
   const gradient = `${appKey}-fill`;
   const last = range.points.length - 1;
+  const t = useThemeColors();
+  const AXIS_TICK = { fill: t.soft, fontSize: 12 };
+  const GRID = t.lineSoft;
   const tooltip = <ChartTooltip format={formatValue} />;
   const axes = (
     <>
@@ -107,7 +110,7 @@ function ChannelChart({ channel, range }: { channel: ChannelOverview; range: Cha
         dataKey="label"
         tick={AXIS_TICK}
         tickLine={false}
-        axisLine={{ stroke: "#cfdfec" }}
+        axisLine={{ stroke: t.line }}
         interval="preserveStartEnd"
         minTickGap={6}
         height={22}
@@ -131,23 +134,23 @@ function ChannelChart({ channel, range }: { channel: ChannelOverview; range: Cha
         <AreaChart data={range.points} margin={{ top: 8, right: 10, bottom: 0, left: -6 }}>
           <defs>
             <linearGradient id={gradient} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#0074bf" stopOpacity={0.7} />
-              <stop offset="100%" stopColor="#0074bf" stopOpacity={0.04} />
+              <stop offset="0%" stopColor={t.brand} stopOpacity={0.7} />
+              <stop offset="100%" stopColor={t.brand} stopOpacity={0.04} />
             </linearGradient>
           </defs>
           {axes}
-          <Tooltip content={tooltip} cursor={{ stroke: "#8796a7", strokeWidth: 1 }} />
+          <Tooltip content={tooltip} cursor={{ stroke: t.mute, strokeWidth: 1 }} />
           <Area
             type="monotone"
             dataKey="value"
-            stroke="#0074bf"
+            stroke={t.brand}
             strokeWidth={2}
             fill={`url(#${gradient})`}
             isAnimationActive={false}
-            activeDot={{ r: 5, fill: "#0074bf", stroke: "#ffffff", strokeWidth: 2 }}
+            activeDot={{ r: 5, fill: t.brand, stroke: "#ffffff", strokeWidth: 2 }}
             dot={(props: { cx?: number; cy?: number; index?: number }) =>
               props.index === last ? (
-                <circle key="end" cx={props.cx} cy={props.cy} r={5} fill="#0074bf" stroke="#ffffff" strokeWidth={2} />
+                <circle key="end" cx={props.cx} cy={props.cy} r={5} fill={t.brand} stroke="#ffffff" strokeWidth={2} />
               ) : (
                 <g key={props.index} />
               )
@@ -158,8 +161,8 @@ function ChannelChart({ channel, range }: { channel: ChannelOverview; range: Cha
         <BarChart data={range.points} margin={{ top: 8, right: 6, bottom: 0, left: -6 }} barCategoryGap="34%">
           <defs>
             <linearGradient id={gradient} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#2a93d5" stopOpacity={1} />
-              <stop offset="100%" stopColor="#0074bf" stopOpacity={0.3} />
+              <stop offset="0%" stopColor={mix(t.brand, "#ffffff", 0.18)} stopOpacity={1} />
+              <stop offset="100%" stopColor={t.brand} stopOpacity={0.3} />
             </linearGradient>
           </defs>
           {axes}
@@ -190,7 +193,7 @@ export default function ChannelCard({ channel, icon: Icon, hubSide, hubRef, hidd
       ref={ref}
       aria-label={channel.title}
       inert={hidden}
-      className={`flex min-h-0 flex-col rounded-xl border border-line bg-panel/90 p-3 shadow-xl shadow-[#0b2a45]/15 transition-opacity duration-200 2xl:p-3.5 ${
+      className={`flex min-h-0 flex-col rounded-xl border border-line bg-panel/90 p-3 shadow-xl shadow-ink/15 transition-opacity duration-200 2xl:p-3.5 ${
         hidden ? "pointer-events-none opacity-0" : ""
       } ${className}`}
     >

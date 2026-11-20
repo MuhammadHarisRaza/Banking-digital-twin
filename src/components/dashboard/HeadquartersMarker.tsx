@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import L from "leaflet";
 import { Marker, Tooltip } from "react-leaflet";
 import { useNavigate } from "react-router";
-import { HEADQUARTERS } from "../../data/headquarters";
+import { useBankData } from "../../data/bankData";
 
 const LANDMARK_ICON = `<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 18v-7"/><path d="M11.12 2.198a2 2 0 0 1 1.76.006l7.866 3.847c.476.233.31.949-.22.949H3.474c-.53 0-.695-.716-.22-.949z"/><path d="M14 18v-7"/><path d="M18 18v-7"/><path d="M3 22h18"/><path d="M6 18v-7"/></svg>`;
 
@@ -20,6 +20,7 @@ const ICON = L.divIcon({
 
 export default function HeadquartersMarker() {
   const navigate = useNavigate();
+  const { headquarters: HEADQUARTERS } = useBankData();
 
   const eventHandlers = useMemo(
     () => ({
@@ -36,7 +37,7 @@ export default function HeadquartersMarker() {
       position={[HEADQUARTERS.lat, HEADQUARTERS.lng]}
       icon={ICON}
       title="Open Headquarters Overview"
-      alt="UBL Head Office, Karachi"
+      alt={`${HEADQUARTERS.name}, ${HEADQUARTERS.location}`}
       zIndexOffset={900}
       eventHandlers={eventHandlers}
     >

@@ -1,4 +1,5 @@
 import { useEffect, useState, type Ref } from "react";
+import { useConfig } from "../../store/settingsStore";
 import type { Branch } from "../../types";
 import ApplicationLaunchButtons from "./ApplicationLaunchButtons";
 import BranchActivity from "./BranchActivity";
@@ -10,6 +11,7 @@ import BranchOverview from "./BranchOverview";
 import BranchPeople from "./BranchPeople";
 import BranchSummary from "./BranchSummary";
 import BranchTabs, { type BranchTab } from "./BranchTabs";
+import BranchCustomers from "../c360/BranchCustomers";
 
 interface Props {
   branch: Branch;
@@ -21,6 +23,7 @@ interface Props {
 export default function BranchDetailsPanel({ branch, onClose, className = "", ref }: Props) {
   const [tab, setTab] = useState<BranchTab>("overview");
   const [content, setContent] = useState<HTMLDivElement | null>(null);
+  const { organisation } = useConfig();
 
   useEffect(() => {
     content?.scrollTo({ top: 0 });
@@ -30,7 +33,7 @@ export default function BranchDetailsPanel({ branch, onClose, className = "", re
     <aside
       ref={ref}
       aria-label={`${branch.name} details`}
-      className={`panel-enter flex flex-col overflow-hidden rounded-xl border border-line bg-panel/97 shadow-2xl shadow-[#0b2a45]/15 ${className}`}
+      className={`panel-enter flex flex-col overflow-hidden rounded-xl border border-line bg-panel/97 shadow-2xl shadow-ink/15 ${className}`}
     >
       <div className="shrink-0 px-4 pt-3">
         <BranchHeader branch={branch} onClose={onClose} />
@@ -47,14 +50,14 @@ export default function BranchDetailsPanel({ branch, onClose, className = "", re
       >
         {tab === "overview" && <BranchOverview branch={branch} onViewAll={() => setTab("applications")} />}
         {tab === "people" && <BranchPeople branch={branch} />}
+        {tab === "customers" && <BranchCustomers branch={branch} />}
         {tab === "applications" && <BranchApplications branch={branch} />}
         {tab === "agents" && <BranchAgents branch={branch} />}
         {tab === "knowledge" && <BranchKnowledge branch={branch} />}
         {tab === "activity" && <BranchActivity branch={branch} />}
       </div>
       <p className="shrink-0 border-t border-line-soft px-4 py-1 text-[11.5px] leading-snug text-mute">
-        Branch profile is from UBL’s published lists. Photo is representative. Staff, activity and performance are
-        illustrative.
+        {organisation.branchFootnote}
       </p>
     </aside>
   );

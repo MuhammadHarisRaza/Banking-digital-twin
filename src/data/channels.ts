@@ -47,7 +47,7 @@ export const CALL_CENTER: ChannelOverview = {
 export const MOBILE_APP: ChannelOverview = {
   appKey: "mobileApp",
   title: "Mobile App",
-  subtitle: "Digital banking for customers across Pakistan",
+  subtitle: "Digital banking for customers nationwide",
   chartTitle: "Mobile Transactions",
   chartType: "bar",
   metrics: [

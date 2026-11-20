@@ -1,4 +1,5 @@
-import { Bot, Layers, Users, type LucideIcon } from "lucide-react";
+import { Bot, Layers, Store, Users, type LucideIcon } from "lucide-react";
+import { useBrand } from "../../config/useBrand";
 import type { Branch } from "../../types";
 import type { BranchTab } from "./BranchTabs";
 
@@ -8,6 +9,7 @@ interface Props {
 }
 
 export default function BranchSummary({ branch, onOpenTab }: Props) {
+  const { shortName } = useBrand();
   const stats: { label: string; value: number; icon: LucideIcon; tab: BranchTab }[] = [
     { label: "Staff", value: branch.staff, icon: Users, tab: "people" },
     { label: "Apps", value: branch.applications.length, icon: Layers, tab: "applications" },
@@ -16,7 +18,14 @@ export default function BranchSummary({ branch, onOpenTab }: Props) {
 
   return (
     <div className="mt-2 grid grid-cols-[minmax(0,1fr)_minmax(0,1.9fr)] gap-2.5 max-sm:grid-cols-1">
-      <img src={branch.image} alt="UBL branch" className="h-[58px] w-full rounded-lg object-cover object-top" />
+      {branch.image ? (
+        <img src={branch.image} alt={`${shortName} branch`} className="h-[58px] w-full rounded-lg object-cover object-top" />
+      ) : (
+        <div className="flex h-[58px] w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-brand to-brand-bright text-white">
+          <Store className="size-6" strokeWidth={1.4} aria-hidden="true" />
+          <span className="truncate text-[14px] font-semibold">{shortName}</span>
+        </div>
+      )}
       <div className="grid grid-cols-3 divide-x divide-line rounded-lg border border-line-soft bg-card/60">
         {stats.map(({ label, value, icon: Icon, tab }) => (
           <button

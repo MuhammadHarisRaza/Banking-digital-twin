@@ -1,11 +1,15 @@
 import { useMemo } from "react";
-import { BRANCHES } from "../../data/branches";
-import { NETWORK_SNAPSHOT } from "../../data/headquarters";
+import { useBankData } from "../../data/bankData";
+import { listLabel } from "../../data/branchSource";
+import { useBranches } from "../../data/branches";
+import { useConfig } from "../../store/settingsStore";
 import { formatNumber } from "../../lib/seeded";
 
-const { branches, islamicBranches, islamicWindows, deposits, digitalCustomers } = NETWORK_SNAPSHOT;
-
 export default function NetworkSnapshot({ headingClass }: { headingClass: string }) {
+  const { all: BRANCHES, source } = useBranches();
+  const { snapshot } = useBankData();
+  const { organisation, brand } = useConfig();
+  const { branches, islamicBranches, deposits, digitalCustomers } = snapshot;
   const { provinces, cities } = useMemo(() => {
     const totals = new Map<string, { branches: number; islamic: number }>();
     for (const branch of BRANCHES) {
@@ -18,22 +22,24 @@ export default function NetworkSnapshot({ headingClass }: { headingClass: string
       provinces: [...totals].map(([name, row]) => ({ name, ...row })).sort((a, b) => b.branches - a.branches),
       cities: new Set(BRANCHES.map((branch) => branch.city)).size,
     };
-  }, []);
+  }, [BRANCHES]);
 
   const stats = [
-    ["Branches, Dec 2025", formatNumber(branches)],
-    ["Islamic branches", String(islamicBranches)],
-    ["Islamic windows", String(islamicWindows)],
-    ["Deposits", deposits],
-    ["Digital customers", digitalCustomers],
-    ["Cities in branch list", String(cities)],
+    ["Branches", formatNumber(branches)],
+    ["Islamic branches", formatNumber(islamicBranches)],
+    ["Cities", formatNumber(cities)],
+    ...(deposits ? [["Deposits", deposits]] : []),
+    ...(digitalCustomers ? [["Digital customers", digitalCustomers]] : []),
   ];
-  const largest = provinces[0].branches;
+  const largest = provinces[0]?.branches ?? 1;
 
   return (
     <>
       <h2 className={headingClass}>Network snapshot</h2>
-      <p className="mt-0.5 text-[15px] text-soft">UBL investor presentation, December 2025</p>
+      <p className="mt-0.5 text-[15px] text-soft">
+        Calculated from {listLabel(source, brand.shortName)}.
+        {(deposits || digitalCustomers) && organisation.networkSource ? ` Deposits and digital customers: ${organisation.networkSource}.` : ""}
+      </p>
 
       <dl className="mt-4 grid grid-cols-2 gap-x-6 gap-y-3 sm:grid-cols-3">
         {stats.map(([label, value]) => (
@@ -45,7 +51,7 @@ export default function NetworkSnapshot({ headingClass }: { headingClass: string
       </dl>
 
       <p className="mt-5 text-[15px] text-soft">
-        {formatNumber(BRANCHES.length)} branches by province, from UBL’s July 2024 branch list
+        {formatNumber(BRANCHES.length)} branches by province, from {source === "published" ? `${brand.shortName}’s July 2024 branch list` : listLabel(source, brand.shortName)}
       </p>
       <table className="mt-1 w-full border-separate border-spacing-y-1.5 text-[15px]">
         <caption className="sr-only">Branches by province</caption>

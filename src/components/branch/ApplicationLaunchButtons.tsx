@@ -8,14 +8,15 @@ const APPS: { key: AppLinkKey; title: string; description: string; icon: LucideI
     title: "Digital Eye",
     description: "Branch Surveillance & Operations",
     icon: Camera,
-    style: "border-[#005a96] bg-gradient-to-r from-[#0074bf] to-[#005a96] hover:from-[#0069ad] hover:to-[#004f85]",
+    style: "border-brand-bright bg-gradient-to-r from-brand to-brand-bright hover:brightness-110",
   },
   {
     key: "customer360",
     title: "Customer 360 (C360)",
     description: "Customer View & Relationship Management",
     icon: Users,
-    style: "border-[#0b6045] bg-gradient-to-r from-[#0f7a55] to-[#0b6045] hover:from-[#0d6f4d] hover:to-[#09543c]",
+    style:
+      "border-[color-mix(in_srgb,var(--color-accent)_78%,black)] bg-gradient-to-r from-accent to-[color-mix(in_srgb,var(--color-accent)_78%,black)] hover:brightness-110",
   },
 ];
 

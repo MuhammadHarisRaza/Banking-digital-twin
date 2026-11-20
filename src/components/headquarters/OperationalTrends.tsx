@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { OPERATIONAL_TRENDS } from "../../data/headquarters";
+import { useThemeColors } from "../../config/useBrand";
 import type { TrendPoint } from "../../types";
 
 type MetricKey = "transactions" | "digitalShare" | "incidents";
@@ -11,7 +12,6 @@ const METRICS: Record<MetricKey, { tab: string; title: string; format: (v: numbe
   incidents: { tab: "Incidents", title: "Operational incidents per month", format: (v) => String(v), tick: (v) => String(v), ticks: [0, 10, 20, 30, 40, 50] },
 };
 
-const AXIS_TICK = { fill: "#3f5b73", fontSize: 13.5 };
 const SEGMENT = "rounded-md px-3 py-1 text-[14.5px] transition-colors";
 
 function Segmented<T extends string>({ value, options, onChange, label }: {
@@ -44,7 +44,7 @@ function ChartTooltip({ active, payload, format }: {
 }) {
   if (!active || !payload?.length) return null;
   return (
-    <div className="rounded-md border border-line bg-panel px-3 py-1.5 text-[14px] shadow-lg shadow-[#0b2a45]/15">
+    <div className="rounded-md border border-line bg-panel px-3 py-1.5 text-[14px] shadow-lg shadow-ink/15">
       <div className="text-mute">{payload[0].payload.month}</div>
       <div className="font-semibold">{format(payload[0].value)}</div>
     </div>
@@ -56,6 +56,8 @@ export default function OperationalTrends({ headingClass }: { headingClass: stri
   const [view, setView] = useState<"chart" | "table">("chart");
   const { title, format, tick, ticks } = METRICS[metric];
   const last = OPERATIONAL_TRENDS.length - 1;
+  const t = useThemeColors();
+  const AXIS_TICK = { fill: t.soft, fontSize: 13.5 };
 
   return (
     <>
@@ -84,8 +86,8 @@ export default function OperationalTrends({ headingClass }: { headingClass: stri
         <div className="mt-4 h-[270px]">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={OPERATIONAL_TRENDS} margin={{ top: 22, right: 34, bottom: 0, left: -6 }}>
-              <CartesianGrid vertical={false} stroke="#e1ebf3" />
-              <XAxis dataKey="month" tick={AXIS_TICK} tickLine={false} axisLine={{ stroke: "#cfdfec" }} />
+              <CartesianGrid vertical={false} stroke={t.lineSoft} />
+              <XAxis dataKey="month" tick={AXIS_TICK} tickLine={false} axisLine={{ stroke: t.line }} />
               <YAxis
                 domain={[ticks[0], ticks[ticks.length - 1]]}
                 ticks={ticks}
@@ -97,25 +99,25 @@ export default function OperationalTrends({ headingClass }: { headingClass: stri
               />
               <Tooltip
                 content={<ChartTooltip format={format} />}
-                cursor={{ stroke: "#8796a7", strokeWidth: 1 }}
+                cursor={{ stroke: t.mute, strokeWidth: 1 }}
               />
               <Line
                 type="monotone"
                 dataKey={metric}
-                stroke="#0074bf"
+                stroke={t.brand}
                 strokeWidth={2}
                 isAnimationActive={false}
-                activeDot={{ r: 5, fill: "#0074bf", stroke: "#ffffff", strokeWidth: 2 }}
+                activeDot={{ r: 5, fill: t.brand, stroke: "#ffffff", strokeWidth: 2 }}
                 dot={(props: { cx?: number; cy?: number; index?: number }) =>
                   props.index === last ? (
-                    <circle key="end" cx={props.cx} cy={props.cy} r={4.5} fill="#0074bf" stroke="#ffffff" strokeWidth={2} />
+                    <circle key="end" cx={props.cx} cy={props.cy} r={4.5} fill={t.brand} stroke="#ffffff" strokeWidth={2} />
                   ) : (
                     <g key={props.index} />
                   )
                 }
                 label={(props: { x?: number | string; y?: number | string; index?: number; value?: number | string | boolean | null }) =>
                   props.index === last ? (
-                    <text key="end-label" x={Number(props.x)} y={Number(props.y) - 12} fill="#0b2a45" fontSize={14.5} fontWeight={600} textAnchor="middle">
+                    <text key="end-label" x={Number(props.x)} y={Number(props.y) - 12} fill={t.ink} fontSize={14.5} fontWeight={600} textAnchor="middle">
                       {format(Number(props.value))}
                     </text>
                   ) : (

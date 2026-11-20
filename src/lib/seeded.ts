@@ -1,3 +1,5 @@
+import { getConfig } from "../store/settingsStore";
+
 /** Deterministic random source, so demo data stays stable between reloads. */
 export function seeded(key: string) {
   let h = 2166136261;
@@ -12,4 +14,11 @@ export function seeded(key: string) {
   };
 }
 
-export const formatNumber = (n: number) => n.toLocaleString("en-US");
+/** Formats with the locale chosen in Settings. */
+export const formatNumber = (n: number) => {
+  try {
+    return n.toLocaleString(getConfig().organisation.locale || "en-US");
+  } catch {
+    return n.toLocaleString("en-US");
+  }
+};

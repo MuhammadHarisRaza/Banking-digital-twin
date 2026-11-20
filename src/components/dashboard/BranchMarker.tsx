@@ -2,6 +2,7 @@ import { memo, useMemo } from "react";
 import L from "leaflet";
 import { Store } from "lucide-react";
 import { Marker, Tooltip } from "react-leaflet";
+import { useNavigate } from "react-router";
 import type { Branch } from "../../types";
 
 interface Props {
@@ -15,6 +16,7 @@ const HIT_SIZES = { primary: 26, secondary: 15 };
 const CALLOUT_GAP = 76;
 
 function BranchMarker({ branch, selected, onSelect }: Props) {
+  const navigate = useNavigate();
   const icon = useMemo(() => {
     const size = selected ? HIT_SIZES.primary : HIT_SIZES[branch.tier];
     return L.divIcon({
@@ -28,11 +30,13 @@ function BranchMarker({ branch, selected, onSelect }: Props) {
   const eventHandlers = useMemo(
     () => ({
       click: () => onSelect(branch.id),
+      // Double-click opens the branch's 3D twin.
+      dblclick: () => navigate(`/branches/${branch.id}/twin`),
       keypress: (e: L.LeafletKeyboardEvent) => {
         if (e.originalEvent.key === "Enter") onSelect(branch.id);
       },
     }),
-    [branch.id, onSelect],
+    [branch.id, onSelect, navigate],
   );
 
   const calloutLeft = branch.lng > 69;

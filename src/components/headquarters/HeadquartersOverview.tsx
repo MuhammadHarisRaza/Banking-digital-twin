@@ -1,7 +1,9 @@
 import { ArrowLeft, Bot, Building, Layers, MapPin, Users, type LucideIcon } from "lucide-react";
+import { useBrand } from "../../config/useBrand";
+import { useBankData } from "../../data/bankData";
 import { Link } from "react-router";
-import hqImage from "../../assets/images/ubl-head-office-aerial.jpg";
-import { DEPARTMENTS, BANK_TOTALS, HEADQUARTERS, HQ_ACTIVITY } from "../../data/headquarters";
+import { DEPARTMENTS } from "../../data/headquarters";
+import { useConfig } from "../../store/settingsStore";
 import { formatNumber } from "../../lib/seeded";
 import ActivityList from "../common/ActivityList";
 import NetworkSnapshot from "./NetworkSnapshot";
@@ -50,10 +52,17 @@ function DepartmentOverview() {
 }
 
 export default function HeadquartersOverview() {
+  const { totals: BANK_TOTALS, headquarters: HEADQUARTERS, activity: HQ_ACTIVITY } = useBankData();
+  const { hqAerialUrl } = useBrand();
+  const { organisation } = useConfig();
   return (
     <main className="flex-1 pb-8">
       <section className="relative isolate overflow-hidden">
-        <img src={hqImage} alt="UBL Head Office tower, Karachi" className="absolute inset-0 -z-20 size-full object-cover object-[50%_36%]" />
+        {hqAerialUrl ? (
+          <img src={hqAerialUrl} alt={`${HEADQUARTERS.name}, ${HEADQUARTERS.location}`} className="absolute inset-0 -z-20 size-full object-cover object-[50%_36%]" />
+        ) : (
+          <div className="absolute inset-0 -z-20 bg-gradient-to-br from-brand/35 via-brand/10 to-page" />
+        )}
         <div className="absolute inset-0 -z-10 bg-gradient-to-t from-page via-page/50 to-transparent" />
         <div className="absolute inset-0 -z-10 bg-gradient-to-r from-page via-page/70 to-transparent" />
 
@@ -102,7 +111,7 @@ export default function HeadquartersOverview() {
         </section>
       </div>
 
-      <p className="mt-4 px-4 text-[13px] text-mute sm:px-6 desk:px-11">Registered office: {HEADQUARTERS.registeredOffice}. Network figures and milestones are from UBL publications and news reports. Headquarters staff, departments, applications, agents and operational trends are illustrative demo data.</p>
+      <p className="mt-4 px-4 text-[13px] text-mute sm:px-6 desk:px-11">Registered office: {HEADQUARTERS.registeredOffice}. {organisation.hqFootnote}</p>
     </main>
   );
 }

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import L from "leaflet";
 import { Maximize, Minus, Plus } from "lucide-react";
 import { GeoJSON, ImageOverlay, MapContainer, Marker } from "react-leaflet";
@@ -6,14 +6,14 @@ import outline from "../../assets/geo/pakistan-outline.json";
 import provinces from "../../assets/geo/pakistan-provinces.json";
 import terrainBounds from "../../assets/geo/terrain-bounds.json";
 import terrain from "../../assets/geo/pakistan-terrain.webp";
-import { BRANCHES } from "../../data/branches";
+import { useBrand } from "../../config/useBrand";
+import { useBranches } from "../../data/branches";
 import type { Branch } from "../../types";
 import BranchDots from "./BranchDots";
 import BranchMarker from "./BranchMarker";
 import ConnectionArcs from "./ConnectionArcs";
 import HeadquartersMarker from "./HeadquartersMarker";
 
-const PRIMARY_BRANCHES = BRANCHES.filter((branch) => branch.tier === "primary");
 const PAKISTAN_BOUNDS = L.latLngBounds([23.6, 60.85], [37.1, 77.85]);
 const PAN_LIMITS = L.latLngBounds([5, 20], [55, 125]);
 const TERRAIN_BOUNDS = L.latLngBounds(
@@ -21,12 +21,6 @@ const TERRAIN_BOUNDS = L.latLngBounds(
   [terrainBounds.north, terrainBounds.east],
 );
 
-const LABEL_ICON = L.divIcon({
-  className: "country-label",
-  html: "PAKISTAN",
-  iconSize: [140, 24],
-  iconAnchor: [70, 12],
-});
 
 const PROVINCE_STYLE: L.PathOptions = { color: "#9fb2c6", weight: 0.8, opacity: 0.5, fill: false };
 const OUTLINE_STYLE: L.PathOptions = { color: "#c7d3df", weight: 1.3, opacity: 0.85, fill: false };
@@ -46,6 +40,18 @@ interface Props {
 
 export default function PakistanMap({ selected, onSelect, leftInset, rightInset, leftHub, rightHub }: Props) {
   const [map, setMap] = useState<L.Map | null>(null);
+  const { primary } = useBranches();
+  const { country } = useBrand();
+  const labelIcon = useMemo(
+    () =>
+      L.divIcon({
+        className: "country-label",
+        html: country.toUpperCase().replace(/[<>&]/g, ""),
+        iconSize: [140, 24],
+        iconAnchor: [70, 12],
+      }),
+    [country],
+  );
   const insetRef = useRef({ left: leftInset, right: rightInset });
   insetRef.current = { left: leftInset, right: rightInset };
 
@@ -104,12 +110,12 @@ export default function PakistanMap({ selected, onSelect, leftInset, rightInset,
         maxBoundsViscosity={0.8}
         className="size-full"
       >
-        <ImageOverlay url={terrain} bounds={TERRAIN_BOUNDS} />
+        <ImageOverlay url={terrain} bounds={TERRAIN_BOUNDS} className="map-terrain" />
         <GeoJSON data={provinces as GeoJSON.FeatureCollection} style={PROVINCE_STYLE} interactive={false} />
         <GeoJSON data={outline as GeoJSON.Feature} style={OUTLINE_STYLE} interactive={false} />
-        <Marker position={[28.3, 64.75]} icon={LABEL_ICON} interactive={false} keyboard={false} />
+        <Marker position={[28.3, 64.75]} icon={labelIcon} interactive={false} keyboard={false} />
         <BranchDots onSelect={onSelect} />
-        {PRIMARY_BRANCHES.map((branch) => (
+        {primary.map((branch) => (
           <BranchMarker key={branch.id} branch={branch} selected={branch.id === selected?.id} onSelect={onSelect} />
         ))}
         {selected?.tier === "secondary" && (
@@ -130,7 +136,7 @@ export default function PakistanMap({ selected, onSelect, leftInset, rightInset,
         <button type="button" aria-label="Zoom out" className={CONTROL} onClick={() => map?.zoomOut()}>
           <Minus className="size-4.5" />
         </button>
-        <button type="button" aria-label="Fit Pakistan" className={CONTROL} onClick={() => fitCountry(true)}>
+        <button type="button" aria-label={`Fit ${country}`} className={CONTROL} onClick={() => fitCountry(true)}>
           <Maximize className="size-4" />
         </button>
       </div>

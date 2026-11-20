@@ -1,13 +1,16 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Headset, Smartphone } from "lucide-react";
 import BranchDetailsPanel from "../components/branch/BranchDetailsPanel";
 import ChannelCard from "../components/dashboard/ChannelCard";
 import DashboardHeader from "../components/dashboard/DashboardHeader";
 import HeadquartersCard from "../components/dashboard/HeadquartersCard";
+import BookHealthCard from "../components/c360/BookHealthCard";
 import KPICards from "../components/dashboard/KPICards";
 import PakistanMap from "../components/dashboard/PakistanMap";
 import { CALL_CENTER, MOBILE_APP } from "../data/channels";
+import { useBrand } from "../config/useBrand";
 import { useBranchSelection } from "../hooks/useBranchSelection";
+import { useConfig } from "../store/settingsStore";
 
 const FLOATING_LAYOUT = "(min-width: 80rem)";
 const PANEL_GAP = 44;
@@ -22,9 +25,18 @@ export default function BankOperations() {
   const [rightHub, setRightHub] = useState<HTMLSpanElement | null>(null);
   const [insets, setInsets] = useState({ left: 0, right: 0 });
   const [floating, setFloating] = useState(() => window.matchMedia(FLOATING_LAYOUT).matches);
+  const { modules } = useConfig();
+  const { country } = useBrand();
+  const callCenter = useMemo(() => ({ ...CALL_CENTER, title: modules.callCenter.label }), [modules.callCenter.label]);
+  const mobileApp = useMemo(
+    () => ({ ...MOBILE_APP, title: modules.mobileApp.label, subtitle: `Digital banking for customers across ${country}` }),
+    [modules.mobileApp.label, country],
+  );
+  const showLeft = modules.callCenter.visible;
+  const showRight = modules.mobileApp.visible;
 
   useEffect(() => {
-    if (!section || !leftCard || !rightCard) return;
+    if (!section) return;
     const layout = window.matchMedia(FLOATING_LAYOUT);
     const measure = () => {
       setFloating(layout.matches);
@@ -33,9 +45,10 @@ export default function BankOperations() {
       } else if (panel) {
         setInsets({ left: 0, right: panel.offsetWidth + PANEL_GAP });
       } else {
+        // A channel card hidden in Settings leaves its side of the map clear.
         setInsets({
-          left: leftCard.offsetLeft + leftCard.offsetWidth,
-          right: section.offsetWidth - rightCard.offsetLeft,
+          left: leftCard ? leftCard.offsetLeft + leftCard.offsetWidth : 0,
+          right: rightCard ? section.offsetWidth - rightCard.offsetLeft : 0,
         });
       }
     };
@@ -61,8 +74,9 @@ export default function BankOperations() {
         <div className="min-w-0">
           <DashboardHeader />
           <KPICards />
+          <BookHealthCard />
         </div>
-        <HeadquartersCard />
+        {modules.hqCard.visible && <HeadquartersCard />}
       </section>
 
       <section
@@ -90,36 +104,36 @@ export default function BankOperations() {
         )}
 
         <div className="relative z-[510] grid gap-4 p-4 sm:p-6 md:grid-cols-2 xl:contents">
-          <ChannelCard
+          {showLeft && <ChannelCard
             ref={setLeftCard}
             hubRef={setLeftHub}
             hubSide="right"
-            channel={CALL_CENTER}
+            channel={callCenter}
             icon={Headset}
             hidden={floating && Boolean(selected)}
             className="relative min-h-[380px] xl:absolute xl:top-3 xl:bottom-7 xl:left-11 xl:z-[500] xl:my-auto xl:max-h-[470px] xl:min-h-0 xl:w-[29%]"
-          />
-          <ChannelCard
+          />}
+          {showRight && <ChannelCard
             ref={setRightCard}
             hubRef={setRightHub}
             hubSide="left"
-            channel={MOBILE_APP}
+            channel={mobileApp}
             icon={Smartphone}
             hidden={floating && Boolean(selected)}
             className="relative min-h-[380px] xl:absolute xl:top-3 xl:right-11 xl:bottom-7 xl:z-[500] xl:my-auto xl:max-h-[470px] xl:min-h-0 xl:w-[29%]"
-          />
+          />}
         </div>
 
-        <div className="z-[500] flex flex-wrap items-center gap-x-4 gap-y-0.5 px-4 pb-3 text-[13px] leading-snug text-mute sm:px-6 xl:absolute xl:bottom-1.5 xl:left-11 xl:px-0 xl:pb-0">
+        {modules.mapLegend.visible && <div className="z-[500] flex flex-wrap items-center gap-x-4 gap-y-0.5 px-4 pb-3 text-[13px] leading-snug text-mute sm:px-6 xl:absolute xl:bottom-1.5 xl:left-11 xl:px-0 xl:pb-0">
           <span className="inline-flex items-center gap-1.5 text-soft">
             <span className="size-2 rotate-45 bg-brand" aria-hidden="true" />
             Headquarters
           </span>
           <span className="inline-flex items-center gap-1.5 text-soft">
-            <span className="size-2 rounded-full bg-[#bfe3ff] ring-1 ring-brand" aria-hidden="true" />
+            <span className="size-2 rounded-full bg-map-dot ring-1 ring-brand" aria-hidden="true" />
             Branch
           </span>
-        </div>
+        </div>}
 
       </section>
     </main>
