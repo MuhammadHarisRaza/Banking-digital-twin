@@ -182,7 +182,7 @@ Digital Eye sends edge-box health and camera tamper events to our own backend, *
 folder, built to `digital-twin-integration-v1.md`). This app only reads `GET /api/twin/v1/state` from it, every 30 seconds.
 
 - **Settings → Integrations → Digital Eye:** switch on (the API address, default `VITE_DE_API_URL` else
-  `http://localhost:8080`, is set in the Digital Twin API card), see the connection status (last call, last health check, latest connection check, last refused call,
+  `https://banking-twin-api.waiindustries.org`, is set in the Digital Twin API card), see the connection status (last call, last health check, latest connection check, last refused call,
   and events that differed from the guide), and map Digital Eye **sites** to branches. Boxes and cameras follow their site; a box
   can be moved to another branch, and each camera is linked to one of its branch's twin cameras (`cctv-N` or `atm-N`).
 - **The mapping is shared:** it is stored in banking-twin-api, not in the browser, so everyone sees the same one. Save it with

@@ -163,8 +163,8 @@ export interface BankConfig {
   };
 }
 
-/** Default Digital Twin API address (VITE_DE_API_URL at build time, else the local API). */
-export const DEFAULT_TWIN_API_URL: string = (import.meta.env?.VITE_DE_API_URL as string | undefined) || "http://localhost:8080";
+/** Default Digital Twin API address: VITE_DE_API_URL at build time, else the deployed API (use http://localhost:8080 for a local one). */
+export const DEFAULT_TWIN_API_URL: string = (import.meta.env?.VITE_DE_API_URL as string | undefined) || "https://banking-twin-api.waiindustries.org";
 
 export const MODULE_DEFAULTS: Record<ModuleId, ModuleSetting> = {
   kpiBranches: { visible: true, label: "Branches" },
